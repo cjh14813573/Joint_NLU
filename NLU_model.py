@@ -3,7 +3,7 @@ from torch import nn
 
 class NLUModel(BertPreTrainedModel):
     def __init__(self,config):
-        super.__init__(config)
+        super().__init__(config)
         self.num_intent_labels = config.num_intent_labels
         self.num_slot_labels = config.num_slot_labels
         self.bert = BertModel(config)
@@ -16,21 +16,21 @@ class NLUModel(BertPreTrainedModel):
     def forward(
             self,
             input_ids = None,
-            attention_musk = None,
+            attention_mask = None,
             token_type_ids = None,
             position_ids = None,
-            head_musk = None,
-            input_embeds = None,
+            head_mask = None,
+            inputs_embeds = None,
             output_attentions = None,
             output_hidden_states = None
     ):
         outputs = self.bert(
             input_ids,
-            attention_musk = attention_musk,
+            attention_mask = attention_mask,
             token_type_ids = token_type_ids,
             position_ids = position_ids,
-            head_musk = head_musk,
-            input_embeds = input_embeds,
+            head_mask = head_mask,
+            inputs_embeds = inputs_embeds,
             output_attentions = output_attentions,
             output_hidden_states = output_hidden_states,
         )

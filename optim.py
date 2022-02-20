@@ -35,7 +35,7 @@ class NoamOpt:
         self.optimizer.load_state_dict(state_dict['optimizer'])
 
     def zero_grade(self):
-        return self.optimizer.zero_grade()
+        return self.optimizer.zero_grad()
 
     @property
     def param_groups(self):

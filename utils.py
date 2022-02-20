@@ -1,3 +1,4 @@
+import logging
 
 
 def load_vocab(vocab_file):
@@ -7,3 +8,19 @@ def load_vocab(vocab_file):
 
 def get_ckpt_filename(name, epoch):
     return '{}-{}.ckpt'.format(name,epoch)
+
+def get_logger(filename, print2screen=True):
+    logger = logging.getLogger(filename)
+    logger.setLevel(logging.INFO)
+    fh = logging.FileHandler(filename)
+    fh.setLevel(logging.INFO)
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.INFO)
+    formatter = logging.Formatter('[%(asctime)s][%(thread)d][%(filename)s][line:%(lineno)d][%(levelname)s] \
+                                  >> %(message)s')
+    fh.setFormatter(formatter)
+    ch.setFormatter(formatter)
+    logger.addHandler(fh)
+    if print2screen:
+        logger.addHandler(ch)
+    return logger

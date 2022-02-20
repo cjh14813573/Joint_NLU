@@ -27,8 +27,8 @@ class NLUDataset(Dataset):
                     #[1]: cls_token_id + utt + seq_token_id
                     #[2]: mask(0,0,0,1,1,1) 此处只有0
                     #[4]: pad_token_id + slots_id + pad_token_id
-                    logger.ingo('{} data record loaded'.format(len(dataset)))
-                    return dataset
+        logger.info('{} data record loaded'.format(len(dataset)))
+        return dataset
 
     def __len__(self):
         return len(self.data)
@@ -36,6 +36,32 @@ class NLUDataset(Dataset):
     def __getitem__(self, idx):
         intent, utt, token_type, slot = self.data[idx]
         return {"intent": intent, "utt": utt, "token_type": token_type, "slot": slot}
+
+
+class PinnedBatch:
+    def __init__(self,data):
+        self.data = data
+    def __getitem__(self, i):
+        return self.data[i]
+    def pin_memory(self):
+        for k in self.data.keys():
+            self.data[k] = self.data[k].pin_memory()
+        return self
+
+class PadBatchSeq:
+    def __init__(self, pad_id):
+        self.pad_id = pad_id
+
+    def __call__(self, batch):
+        res = dict()
+        res['intent'] = torch.LongTensor([i['intent'] for i in batch])
+        max_len = max([len(i['utt']) for i in batch])
+        res['utt'] = torch.LongTensor([i['utt'] + [self.pad_id] * (max_len - len(i['utt'])) for i in batch])
+        res['mask'] = torch.LongTensor([[1] * len(i['utt']) + [0] * (max_len - len(i['utt'])) for i in batch])
+        res['token_type'] = torch.LongTensor([i['token_type'] + [self.pad_id] * (max_len - len(i['token_type'])) for i in batch])
+        res['slot'] = torch.LongTensor([i['slot'] + [self.pad_id] * (max_len - len(i['slot'])) for i in batch])
+        return PinnedBatch(res)
+
 
 
 
