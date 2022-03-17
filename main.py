@@ -23,7 +23,7 @@ parser.add_argument('--gpu', type=str,default='3')
 parser.add_argument("--local_rank", help='used for distributed training', type=int, default=-1)
 parser.add_argument('--batch_split', type=int, default=1)
 parser.add_argument('--eval_steps', type=int, default=40)
-parser.add_argument('--crf',)
+parser.add_argument('--crf',action="store_true")
 ###
 
 args = parser.parse_args()
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         bert_config = BertConfig.from_pretrained(args.bert_path)
         bert_config.num_intent_labels = len(intent2index)
         bert_config.num_slot_labels = len(slot2index)
-        model = NLUModel.from_pretrained(args.bert_path, config=bert_config).to(device)
+        model = NLUModel.from_pretrained(args.bert_path, config=bert_config, args=args).to(device)
 
         if distributed:
             model = DistributedDataParallel(model, device_ids=[args.local_rank], output_device=args.local_rank)
