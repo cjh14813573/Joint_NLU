@@ -60,10 +60,10 @@ class NLUModel(BertPreTrainedModel):
         #slot_logits = []
         for i in range(intent_slot_labels.shape[0]):
             if i == 0:
-                slot_logits = self.slot_classifiers[intent_slot_labels[i]](seq_output[i]).unsqueeze(0)
+                slot_logits = self.slot_classifiers[intent_slot_labels[i]](seq_output[i].to(self.args.device)).unsqueeze(0)
             else:
                 slot_logits = torch.cat((slot_logits,
-                                        self.slot_classifiers[intent_slot_labels[i]](seq_output[i]).unsqueeze(0)),0)
+                                        self.slot_classifiers[intent_slot_labels[i]](seq_output[i].to(self.args.device)).unsqueeze(0)),0)
 
         #slot_logits = torch.tensor([item.cpu().numpy() for item in slot_logits])
 

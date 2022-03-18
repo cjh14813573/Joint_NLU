@@ -71,6 +71,7 @@ if __name__ == '__main__':
                 device = torch.device('cuda',0)
             else:
                 device = torch.device('cpu')
+        args.device = device
 
         tokz = BertTokenizer.from_pretrained(args.bert_path)
         _, intent2index, _ = utils.load_vocab(args.intent_label_vocab)
